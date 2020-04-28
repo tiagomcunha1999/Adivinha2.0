@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private int numeroAdivinhar = NumerosAleatorios.proximoNumero();
+    private int tentativas = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,14 +22,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void adivinha(View view) {
-        Intent intent = new Intent(this, NumerosAleatorios.class);
 
         EditText editTextNumero = (EditText) findViewById(R.id.editTextNumero);
 
         String strNumero = editTextNumero.getText().toString();
+
         int numero;
+
         try{
-            int numero = Integer.parseInt(strNumero);
+            numero = Integer.parseInt(strNumero);
         } catch (NumberFormatException e){
             editTextNumero.setError("Numero Invalido");
             editTextNumero.requestFocus();
@@ -40,6 +43,29 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        startActivity(intent);
+        TextView textViewResultado = (TextView) findViewById(R.id.textViewResultado);
+
+        if (numero == numeroAdivinhar){
+            textViewResultado.setText("Parabens, acertou!!!");
+        } else if (numero < numeroAdivinhar){
+            textViewResultado.setText("O numero que estou a pensar e maior. Tente outra vez");
+        } else {//numero > numeroAdivinhar
+            textViewResultado.setText("O numero que estou a pensar e menor. Tente outra vez");
+        }
+
+        public void onSaveInstanceState(Bundle savedInstanceState) {
+
+            savedInstanceState.putInt(STATE_SCORE, currentScore);
+            savedInstanceState.putInt(STATE_LEVEL, currentLevel);
+
+            super.onSaveInstanceState(savedInstanceState);
+        }
+
+
+        tentativas++;
+        TextView textViewtentativas = (TextView) findViewById((R.id.textViewTentativas));
+        textViewtentativas.setText("Tentivas: " + tentativas);
+
     }
+
 }
