@@ -2,6 +2,9 @@ package pt.ipg.adivinha;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -45,27 +48,45 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textViewResultado = (TextView) findViewById(R.id.textViewResultado);
 
+        tentativas++;
+
+        TextView textViewtentativas = (TextView) findViewById((R.id.textViewTentativas));
+        textViewtentativas.setText("Tentivas: " + tentativas);
+
         if (numero == numeroAdivinhar){
             textViewResultado.setText("Parabens, acertou!!!");
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Novo jogo");
+            builder.setMessage("Quer jogar novamente?");
+            builder.setPositiveButton("Sim", new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    novoJogo();
+                        }
+            });
+
+            builder.setNegativeButton("Nao", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                finish();
+                }
+            });
+
+        builder.show();
+
         } else if (numero < numeroAdivinhar){
             textViewResultado.setText("O numero que estou a pensar e maior. Tente outra vez");
         } else {//numero > numeroAdivinhar
             textViewResultado.setText("O numero que estou a pensar e menor. Tente outra vez");
         }
 
-        public void onSaveInstanceState(Bundle savedInstanceState) {
-
-            savedInstanceState.putInt(STATE_SCORE, currentScore);
-            savedInstanceState.putInt(STATE_LEVEL, currentLevel);
-
-            super.onSaveInstanceState(savedInstanceState);
-        }
-
-
-        tentativas++;
-        TextView textViewtentativas = (TextView) findViewById((R.id.textViewTentativas));
-        textViewtentativas.setText("Tentivas: " + tentativas);
-
-    }
 
 }
+
+    private void novoJogo() {
+        numeroAdivinhar = NumerosAleatorios.proximoNumero();
+        tentativas = 0;
+    }
+    }
